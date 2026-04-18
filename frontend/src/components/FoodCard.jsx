@@ -80,7 +80,7 @@ export default function FoodCard({ item }) {
                     <div className="flex items-center justify-between mt-6">
                         <div className="flex flex-col">
                             <span className="text-gray-400 text-[8px] font-black uppercase tracking-widest leading-none mb-0.5">Price</span>
-                            <span className="text-gray-900 dark:text-white font-black text-xl tracking-tighter">₹{item.price}</span>
+                            <span className="text-gray-900 dark:text-white font-black text-xl tracking-tighter">${item.price}</span>
                         </div>
 
                         <AnimatePresence mode="wait">

@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Minus, Plus, Trash2, ShoppingBag, ArrowRight, Tag, Truck } from 'lucide-react';
+import { Minus, Plus, Trash2, ShoppingBag, ArrowRight, Tag, Truck, CreditCard, Banknote } from 'lucide-react';
 import { useStore } from '../context/StoreContext';
 
 export default function Cart() {
     const { foodList, cartItems, addToCart, removeFromCart, getCartTotal, placeOrder, user, url, token } = useStore();
     const [address, setAddress] = useState('');
+    const [paymentMethod, setPaymentMethod] = useState('COD');
     const [placing, setPlacing] = useState(false);
     const [success, setSuccess] = useState(false);
     const navigate = useNavigate();
@@ -35,6 +36,7 @@ export default function Cart() {
             items: cartFoods.map(i => ({ name: i.name, qty: i.qty, price: i.price })),
             amount: total,
             address: address,
+            paymentMethod: paymentMethod,
             userName: user?.name || "Guest"
         };
 
@@ -101,7 +103,7 @@ export default function Cart() {
                                     />
                                     <div className="flex-1 min-w-0">
                                         <h3 className="font-bold text-gray-800 dark:text-white truncate">{item.name}</h3>
-                                        <p className="text-orange-500 font-semibold mt-1">₹{item.price} each</p>
+                                        <p className="text-orange-500 font-semibold mt-1">${item.price} each</p>
                                     </div>
                                     <div className="flex items-center gap-2 flex-shrink-0">
                                         <div className="flex items-center gap-2 bg-gray-100 dark:bg-slate-700 rounded-xl px-1 py-1">
@@ -113,7 +115,7 @@ export default function Cart() {
                                                 <Plus className="w-3.5 h-3.5" />
                                             </button>
                                         </div>
-                                        <span className="font-bold text-gray-800 dark:text-white w-20 text-right">₹{item.price * item.qty}</span>
+                                        <span className="font-bold text-gray-800 dark:text-white w-20 text-right">${item.price * item.qty}</span>
                                     </div>
                                 </div>
                             );
@@ -133,6 +135,34 @@ export default function Cart() {
                                 className="input-field resize-none"
                             />
                         </div>
+
+                        {/* Payment Method */}
+                        <div className="card p-6">
+                            <h3 className="font-bold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
+                                <CreditCard className="w-5 h-5 text-orange-500" /> Payment Method
+                            </h3>
+                            <div className="grid grid-cols-2 gap-4">
+                                <label className={`border-2 rounded-2xl p-4 flex flex-col items-center justify-center cursor-pointer transition-all ${paymentMethod === 'COD' ? 'border-orange-500 bg-orange-50 dark:bg-orange-900/20' : 'border-gray-100 dark:border-slate-700 bg-white dark:bg-slate-800'}`}>
+                                    <input type="radio" name="payment" value="COD" checked={paymentMethod === 'COD'} onChange={() => setPaymentMethod('COD')} className="hidden" />
+                                    <Banknote className={`w-8 h-8 mb-2 ${paymentMethod === 'COD' ? 'text-orange-500' : 'text-gray-400'}`} />
+                                    <span className={`font-bold ${paymentMethod === 'COD' ? 'text-orange-600 dark:text-orange-400' : 'text-gray-600 dark:text-gray-300'}`}>Cash on Delivery</span>
+                                </label>
+                                <label className={`border-2 rounded-2xl p-4 flex flex-col items-center justify-center cursor-pointer transition-all ${paymentMethod === 'Online' ? 'border-orange-500 bg-orange-50 dark:bg-orange-900/20' : 'border-gray-100 dark:border-slate-700 bg-white dark:bg-slate-800'}`}>
+                                    <input type="radio" name="payment" value="Online" checked={paymentMethod === 'Online'} onChange={() => setPaymentMethod('Online')} className="hidden" />
+                                    <CreditCard className={`w-8 h-8 mb-2 ${paymentMethod === 'Online' ? 'text-orange-500' : 'text-gray-400'}`} />
+                                    <span className={`font-bold ${paymentMethod === 'Online' ? 'text-orange-600 dark:text-orange-400' : 'text-gray-600 dark:text-gray-300'}`}>Online / UPI</span>
+                                </label>
+                            </div>
+
+                            {paymentMethod === 'Online' && (
+                                <div className="mt-4 p-4 border border-dashed border-orange-300 rounded-2xl bg-white dark:bg-slate-800 flex flex-col items-center animate-fade-in">
+                                    <p className="text-sm font-bold text-gray-700 dark:text-gray-200 mb-3 text-center">Scan QR Code to Pay</p>
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg" alt="Payment QR Code" className="w-32 h-32 rounded-lg bg-white p-2 shadow-sm border border-gray-100 dark:border-slate-700" />
+                                    <p className="text-xs text-gray-500 mt-3 text-center">Amount to pay: <strong className="text-orange-500 text-lg">${total}</strong></p>
+                                    <p className="text-[10px] text-gray-400 mt-1">Please keep your transaction ID ready</p>
+                                </div>
+                            )}
+                        </div>
                     </div>
 
                     {/* Summary */}
@@ -143,22 +173,22 @@ export default function Cart() {
                             <div className="space-y-3 mb-6">
                                 <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
                                     <span>Subtotal</span>
-                                    <span>₹{subtotal}</span>
+                                    <span>${subtotal}</span>
                                 </div>
                                 <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
                                     <span className="flex items-center gap-1">
                                         <Truck className="w-3.5 h-3.5" /> Delivery
                                     </span>
-                                    <span className={delivery === 0 ? 'text-green-500 font-semibold' : ''}>{delivery === 0 ? 'FREE' : `₹${delivery}`}</span>
+                                    <span className={delivery === 0 ? 'text-green-500 font-semibold' : ''}>{delivery === 0 ? 'FREE' : `$${delivery}`}</span>
                                 </div>
                                 {delivery > 0 && (
                                     <p className="text-xs text-orange-500 bg-orange-50 dark:bg-orange-900/20 rounded-lg p-2">
-                                        Add ₹{500 - subtotal} more for free delivery!
+                                        Add ${500 - subtotal} more for free delivery!
                                     </p>
                                 )}
                                 <div className="border-t border-gray-100 dark:border-slate-700 pt-3 flex justify-between font-bold text-gray-800 dark:text-white text-lg">
                                     <span>Total</span>
-                                    <span className="text-orange-500">₹{total}</span>
+                                    <span className="text-orange-500">${total}</span>
                                 </div>
                             </div>
 

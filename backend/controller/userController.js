@@ -16,9 +16,17 @@ const loginUser = async (req, res) => {
             return res.json({ success: false, message: "Email and password are required" });
         }
 
-        // Check for Demo Admin Credentials first (Always works)
-        if (email === "admin@foodiehub.com" && (password === "admin123" || password === "password")) {
-            return res.json({ success: true, token: "mock-admin-token", user: { name: "Admin", email, isAdmin: true } });
+        // Hardcoded Demo Credentials - Guaranteed to work for report/demo
+        if (email === "riddhi@foodiehub.com" || email === "admin@foodiehub.com") {
+            if (password === "riddhi915" || password === "password") {
+                return res.json({ success: true, token: "mock-admin-token", user: { name: "Admin Riddhi", email, isAdmin: true } });
+            }
+        }
+        
+        if (email === "user@foodiehub.com" || email === "priya@example.com") {
+            if (password === "password" || password === "user123") {
+                return res.json({ success: true, token: "mock-user-token", user: { name: "Demo User", email, isAdmin: false } });
+            }
         }
 
         if (!global.isDBConnected) {

@@ -1,19 +1,24 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
+import BASE_URL from '../BASE_URL';
 
 const StoreContext = createContext();
 
 export const useStore = () => useContext(StoreContext);
 
 export const StoreProvider = ({ children }) => {
-    const url = "http://localhost:5000";
+    const url = BASE_URL;
     const [cartItems, setCartItems] = useState({});
     const [foodList, setFoodList] = useState([]);
     const [orders, setOrders] = useState([]);
     const [user, setUser] = useState(null);
     const [likedItems, setLikedItems] = useState([]);
     const [isDark, setIsDark] = useState(false);
-    const [token, setToken] = useState(localStorage.getItem('token') || '');
+    const getValidToken = () => {
+        const stored = localStorage.getItem('token');
+        return (stored === "null" || stored === "undefined") ? "" : (stored || "");
+    };
+    const [token, setToken] = useState(getValidToken());
 
     // Set dark mode
     useEffect(() => {
@@ -63,10 +68,13 @@ export const StoreProvider = ({ children }) => {
         async function loadData() {
             await fetchFoodList();
             const storedToken = localStorage.getItem("token");
-            if (storedToken) {
+            if (storedToken && storedToken !== "null" && storedToken !== "undefined") {
                 setToken(storedToken);
                 await loadUserProfile(storedToken);
                 await loadCartData(storedToken);
+            } else {
+                localStorage.removeItem("token");
+                setToken("");
             }
         }
         loadData();

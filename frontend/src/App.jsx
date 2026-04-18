@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Menu from './pages/Menu';
@@ -17,9 +17,12 @@ function App() {
     const { user } = useStore();
     const [cartOpen, setCartOpen] = useState(false);
 
+    const location = useLocation();
+    const isAdminRoute = location.pathname.startsWith('/admin');
+
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-slate-900 transition-colors duration-300">
-            <Navbar onCartOpen={() => setCartOpen(true)} />
+            {!isAdminRoute && <Navbar onCartOpen={() => setCartOpen(true)} />}
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/menu" element={<Menu />} />

@@ -47,7 +47,7 @@ export default function ImageModal({ isOpen, onClose, imageUrl, itemName, price,
                                 </div>
                             </div>
                             <div className="text-orange-500 font-black text-4xl">
-                                ₹{price}
+                                ${price}
                             </div>
                         </div>
                     </div>

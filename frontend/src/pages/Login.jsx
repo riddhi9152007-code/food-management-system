@@ -160,7 +160,7 @@ export default function Login() {
                     {mode === 'login' && (
                         <div className="mt-5 p-3 bg-orange-50 dark:bg-orange-900/20 rounded-xl text-xs text-gray-600 dark:text-gray-400 border border-orange-100 dark:border-orange-800">
                             <p className="font-semibold text-orange-600 dark:text-orange-400 mb-1">Demo Credentials:</p>
-                            <p>Admin: <strong>admin@foodiehub.com</strong> / <strong>admin123</strong></p>
+                            <p>Admin: <strong>riddhi@foodiehub.com</strong> / <strong>riddhi915</strong></p>
                             <p>User: <strong>priya@example.com</strong> / <strong>password</strong></p>
                         </div>
                     )}
